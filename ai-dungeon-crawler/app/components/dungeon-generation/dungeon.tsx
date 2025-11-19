@@ -7,7 +7,7 @@ export const MAX_ROOM_SIZE = { width: 7, height: 7 };
 export const DUNGEON_SIZE = { width: 30, height: 30 };
 export const MAX_ROOMS = 7;
 // Probability to re-add non-MST Delaunay edges to create loops
-export const EXTRA_EDGE_CHANCE = 0.15;
+export const EXTRA_EDGE_CHANCE = 0.3;
 // Required empty cells between rooms (room-to-room distance)
 export const ROOM_SEPARATION = 5;
 // Distance minimale entre un couloir et une salle (en cases, Chebyshev)
@@ -128,40 +128,40 @@ export function createDungeon(): Dungeon {
     const mstSet = new Set(mst.edges.map(e => keyEdge(e.a, e.b)));
 
     // Add extra edges (controlled loops)
-// Build adjacency count from MST
-const adjacency = new Array(points.length).fill(0);
-for (const e of mst.edges) {
-    adjacency[e.a]++;
-    adjacency[e.b]++;
-}
+    // Build adjacency count from MST
+    const adjacency = new Array(points.length).fill(0);
+    for (const e of mst.edges) {
+        adjacency[e.a]++;
+        adjacency[e.b]++;
+    }
 
-const finalEdges = [...mst.edges];
+    const finalEdges = [...mst.edges];
 
-for (const e of roomGraph.edges) {
-    const k = keyEdge(e.a, e.b);
+    for (const e of roomGraph.edges) {
+        const k = keyEdge(e.a, e.b);
 
-    // Already in MST → skip
-    if (mstSet.has(k)) continue;
+        // Already in MST → skip
+        if (mstSet.has(k)) continue;
 
-    // Condition 1: random chance
-    if (Math.random() > EXTRA_EDGE_CHANCE) continue;
+        // Condition 1: random chance
+        if (Math.random() > EXTRA_EDGE_CHANCE) continue;
 
-    // Condition 2: both rooms must have <= 2 corridors
-    const degA = adjacency[e.a];
-    const degB = adjacency[e.b];
+        // Condition 2: both rooms must have <= 2 corridors
+        const degA = adjacency[e.a];
+        const degB = adjacency[e.b];
 
-    const MAX_ALLOWED_CONNECTIONS = 2;
+        const MAX_ALLOWED_CONNECTIONS = 2;
 
-    if (degA > MAX_ALLOWED_CONNECTIONS) continue;
-    if (degB > MAX_ALLOWED_CONNECTIONS) continue;
+        if (degA > MAX_ALLOWED_CONNECTIONS) continue;
+        if (degB > MAX_ALLOWED_CONNECTIONS) continue;
 
-    // Accept this loop edge
-    finalEdges.push(e);
+        // Accept this loop edge
+        finalEdges.push(e);
 
-    // Update degree counts
-    adjacency[e.a]++;
-    adjacency[e.b]++;
-}
+        // Update degree counts
+        adjacency[e.a]++;
+        adjacency[e.b]++;
+    }
 
 
     const cols = cells[0]?.length ?? 0;
@@ -560,8 +560,8 @@ export function dungeonWithGraphHTML(
                 c.type === CellTypeEnum.room
                     ? "cell-floor"
                     : c.type === CellTypeEnum.corridor
-                    ? "cell-wall"
-                    : "cell-empty";
+                        ? "cell-wall"
+                        : "cell-empty";
             cellsHTML += `<div class="cell ${cls}"></div>`;
         }
     }
