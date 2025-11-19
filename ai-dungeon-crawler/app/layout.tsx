@@ -5,7 +5,7 @@ import "./globals.css";
 const alagard = localFont({
   src: "../public/fonts/alagard.woff2",
   variable: "--font-alagard",
-})
+});
 
 export const metadata: Metadata = {
   title: "AI Dungeon Crawler",
