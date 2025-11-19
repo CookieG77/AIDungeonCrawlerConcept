@@ -1,0 +1,90 @@
+.dungeon_box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  margin: 20px 0;
+}
+
+/* Le plateau est un carré qui s'adapte au minimum entre la largeur
+   et la hauteur de la fenêtre (avec un padding). */
+.dungeon_board {
+  --board-size: min(90vw, 90vh);
+  width: var(--board-size);
+  height: var(--board-size);
+  max-width: 100%;
+  max-height: 100%;
+  display: grid;
+  box-sizing: border-box;
+  /* Par défaut 10x10, override via inline style: --cols / --rows */
+  grid-template-columns: repeat(var(--cols, 10), 1fr);
+  grid-template-rows: repeat(var(--rows, 10), 1fr);
+  gap: 0;
+  /* les bordures des cellules forment les lignes */
+  background-color: #1f1f1f;
+  border-radius: 8px;
+  border: 2px solid #444;
+  overflow: hidden;
+}
+
+/* Chaque cellule est carrée. L'aspect-ratio garantit la carrure
+   même si le rendu grid est perturbé. */
+.dungeon_cell {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.6rem, 1.4vmin, 1rem);
+  color: #eaeaea;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background-color 120ms ease, color 120ms ease;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background-color: transparent;
+}
+
+/* Variantes de cellule utiles */
+.dungeon_cell--wall {
+  background-color: #3b3b3b;
+  border-color: rgba(0, 0, 0, 0.6);
+}
+
+.dungeon_cell--floor {
+  background-color: #575757;
+}
+
+.dungeon_cell--player {
+  background-color: #4a8ef7;
+  color: white;
+}
+
+.dungeon_cell--highlight {
+  background-color: rgba(74, 142, 247, 0.16);
+}
+
+/* Optionnel : grille plus visible (superposition de lignes via background) */
+.dungeon_board--lined {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: calc(100% / var(--cols, 10)) calc(100% / var(--rows, 10));
+}
+
+/* Petite aide pour centrer le plateau dans la page */
+.dungeon_outer_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Responsive: si l'écran est très petit, autoriser un défilement */
+.dungeon_scrollable {
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+}
